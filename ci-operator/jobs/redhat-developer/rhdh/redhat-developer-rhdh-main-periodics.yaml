@@ -73,7 +73,6 @@ periodics:
   labels:
     ci.openshift.io/generator: prowgen
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  max_concurrency: 1
   name: periodic-ci-redhat-developer-rhdh-main-cleanup-mapt-destroy-orphaned-aks-clusters
   spec:
     containers:
@@ -195,13 +194,6 @@ periodics:
     ci.openshift.io/generator: prowgen
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
   name: periodic-ci-redhat-developer-rhdh-main-e2e-tests-aks-operator-nightly
-  reporter_config:
-    slack:
-      channel: '#rhdh-e2e-test-alerts'
-      job_states_to_report:
-      - success
-      - failure
-      - error
   spec:
     containers:
     - args:
@@ -266,6 +258,7 @@ periodics:
     containers:
     - args:
       - --gcs-upload-secret=/secrets/gcs/service-account.json
+      - --hive-kubeconfig=/secrets/hive-hive-credentials/kubeconfig
       - --image-import-pull-secret=/etc/pull-secret/.dockerconfigjson
       - --report-credentials-file=/etc/report/credentials
       - --secret-dir=/secrets/ci-pull-credentials
@@ -285,6 +278,9 @@ periodics:
       - mountPath: /secrets/gcs
         name: gcs-credentials
         readOnly: true
+      - mountPath: /secrets/hive-hive-credentials
+        name: hive-hive-credentials
+        readOnly: true
       - mountPath: /secrets/manifest-tool
         name: manifest-tool-local-pusher
         readOnly: true
@@ -299,6 +295,9 @@ periodics:
     - name: ci-pull-credentials
       secret:
         secretName: ci-pull-credentials
+    - name: hive-hive-credentials
+      secret:
+        secretName: hive-hive-credentials
     - name: manifest-tool-local-pusher
       secret:
         secretName: manifest-tool-local-pusher
@@ -321,15 +320,7 @@ periodics:
   labels:
     ci.openshift.io/generator: prowgen
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  max_concurrency: 1
   name: periodic-ci-redhat-developer-rhdh-main-e2e-tests-gke-helm-nightly
-  reporter_config:
-    slack:
-      channel: '#rhdh-e2e-test-alerts'
-      job_states_to_report:
-      - success
-      - failure
-      - error
   spec:
     containers:
     - args:
@@ -650,7 +641,6 @@ periodics:
   labels:
     ci.openshift.io/generator: prowgen
     pj-rehearse.openshift.io/can-be-rehearsed: "true"
-  max_concurrency: 1
   name: periodic-ci-redhat-developer-rhdh-main-e2e-tests-operator-nightly
   spec:
     containers:
