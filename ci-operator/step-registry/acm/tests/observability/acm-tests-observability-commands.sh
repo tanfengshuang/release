@@ -54,6 +54,8 @@ BASE_DOMAIN=$(echo $DOMAIN | sed 's/apps.//g')
 echo $BASE_DOMAIN
 export BASE_DOMAIN
 
+sleep 8h
+
 # Set the dynamic vars needed to execute the Observability scenarios on the managed clusters
 # MANAGED_CLUSTER_NAME=$(cat $SHARED_DIR/managed.cluster.name)
 # export MANAGED_CLUSTER_NAME
