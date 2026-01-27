@@ -108,6 +108,7 @@ tests:
     - ref: acm-tests-clc-create
     - ref: acm-fetch-managed-clusters
     - ref: acm-tests-observability
+    - ref: acm-tests-observability-ftan
     - ref: acm-tests-grc
     - ref: acm-tests-alc
     - ref: openshift-extended-test

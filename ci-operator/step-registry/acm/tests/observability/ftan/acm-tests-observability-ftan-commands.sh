@@ -54,31 +54,23 @@ BASE_DOMAIN=$(echo $DOMAIN | sed 's/apps.//g')
 echo $BASE_DOMAIN
 export BASE_DOMAIN
 
+sleep 8h
+
 # Set the dynamic vars needed to execute the Observability scenarios on the managed clusters
-if [[ -f "$SHARED_DIR/managed.cluster.name" ]]; then
-    MANAGED_CLUSTER_NAME=$(cat $SHARED_DIR/managed.cluster.name)
-    export MANAGED_CLUSTER_NAME
-fi
+# MANAGED_CLUSTER_NAME=$(cat $SHARED_DIR/managed.cluster.name)
+# export MANAGED_CLUSTER_NAME
 
-if [[ -f "$SHARED_DIR/managed.cluster.base.domain" ]]; then
-    MANAGED_CLUSTER_BASE_DOMAIN=$(cat $SHARED_DIR/managed.cluster.base.domain)
-    export MANAGED_CLUSTER_BASE_DOMAIN
-fi
+# MANAGED_CLUSTER_BASE_DOMAIN=$(cat $SHARED_DIR/managed.cluster.base.domain)
+# export MANAGED_CLUSTER_BASE_DOMAIN
 
-if [[ -f "$SHARED_DIR/managed.cluster.username" ]]; then
-    MANAGED_CLUSTER_USER=$(cat $SHARED_DIR/managed.cluster.username)
-    export MANAGED_CLUSTER_USER
-fi
+# MANAGED_CLUSTER_USER=$(cat $SHARED_DIR/managed.cluster.username)
+# export MANAGED_CLUSTER_USER
 
-if [[ -f "$SHARED_DIR/managed.cluster.password" ]]; then
-    MANAGED_CLUSTER_PASS=$(cat $SHARED_DIR/managed.cluster.password)
-    export MANAGED_CLUSTER_PASS
-fi
+# MANAGED_CLUSTER_PASS=$(cat $SHARED_DIR/managed.cluster.password)
+# export MANAGED_CLUSTER_PASS
 
-if [[ -f "$SHARED_DIR/managed.cluster.api.url" ]]; then
-    MANAGED_CLUSTER_API_URL=$(cat $SHARED_DIR/managed.cluster.api.url)
-    export MANAGED_CLUSTER_API_URL
-fi
+# MANAGED_CLUSTER_API_URL=$(cat $SHARED_DIR/managed.cluster.api.url)
+# export MANAGED_CLUSTER_API_URL
 
 # Create a .kube directory inside the alabama dir
 mkdir -p /alabama/.kube
@@ -109,6 +101,8 @@ if [[ -f "$RBAC_TEST_FILE" ]]; then
 else
     echo "Warning: $RBAC_TEST_FILE not found, skipping fix"
 fi
+
+sleep 8h
 
 # run the test execution script
 bash +x ./execute_obs_interop_commands.sh || :
