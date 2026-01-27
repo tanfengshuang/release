@@ -103,6 +103,7 @@ tests:
     - chain: cucushift-installer-check-cluster-health
     - ref: acm-tests-clc-create
     - ref: acm-fetch-managed-clusters
+    - ref: acm-tests-observability
     - ref: acm-tests-observability-ftan
     - ref: acm-tests-grc
     - ref: acm-tests-alc
