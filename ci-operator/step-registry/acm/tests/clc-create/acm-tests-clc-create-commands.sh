@@ -49,17 +49,13 @@ fi
 
 : "Executing CLC interop commands..."
 set +x
-export CYPRESS_OPTIONS_HUB_PASSWORD=
-CYPRESS_OPTIONS_HUB_PASSWORD="$(cat "${SHARED_DIR}/kubeadmin-password")" 
-set -x
-
+CYPRESS_OPTIONS_HUB_PASSWORD="$(cat "${SHARED_DIR}/kubeadmin-password")" \
 CYPRESS_BASE_URL="$(oc whoami --show-console)" \
 CYPRESS_HUB_API_URL="$(oc whoami --show-server)" \
 CYPRESS_CLC_OCP_IMAGE_VERSION="$(cat "${secretsDir}/clc/ocp_image_version")" \
 CLOUD_PROVIDERS="$(cat "${secretsDir}/clc/ocp_cloud_providers")" \
 bash +x ./execute_clc_interop_commands.sh || :
-
-unset CYPRESS_OPTIONS_HUB_PASSWORD
+set -x
 
 : "Copying artifacts..."
 cp -r reports "${ARTIFACT_DIR}/" || :
