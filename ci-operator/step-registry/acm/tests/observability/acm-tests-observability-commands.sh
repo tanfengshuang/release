@@ -22,22 +22,32 @@ if oc get subscription.apps.open-cluster-management.io -n policies openshift-plu
     oc delete subscription.apps.open-cluster-management.io -n policies openshift-plus-sub
 fi
 
-# Run the test execution script with the dynamic vars needed
-( set +x  # Prevent sensitive data from being printed to logs
-    PARAM_AWS_SECRET_ACCESS_KEY="$(cat "${secretsDir}/obs/aws-secret-access-key")" \
-    PARAM_AWS_ACCESS_KEY_ID="$(cat "${secretsDir}/obs/aws-access-key-id")" \
-    OC_HUB_CLUSTER_PASS="$(cat "${SHARED_DIR}/kubeadmin-password")" \
-    MANAGED_CLUSTER_PASS="$(cat "${SHARED_DIR}/managed.cluster.password" 2>/dev/null || true)" \
-    OC_CLUSTER_USER="kubeadmin" \
-    BASE_DOMAIN="$(oc get ingress.config.openshift.io/cluster -ojson | jq -r '.spec.domain | sub("apps\\."; "")')" \
-    OC_HUB_CLUSTER_API_URL="$(oc whoami --show-server)" \
-    HUB_CLUSTER_NAME="local-cluster" \
-    MANAGED_CLUSTER_API_URL="$(cat "${SHARED_DIR}/managed.cluster.api.url" 2>/dev/null || true)" \
-    MANAGED_CLUSTER_NAME="$(cat "${SHARED_DIR}/managed.cluster.name" 2>/dev/null || true)" \
-    MANAGED_CLUSTER_BASE_DOMAIN="$(cat "${SHARED_DIR}/managed.cluster.base.domain" 2>/dev/null || true)" \
-    MANAGED_CLUSTER_USER="$(cat "${SHARED_DIR}/managed.cluster.username" 2>/dev/null || true)" \
-    bash +x ./execute_obs_interop_commands.sh
-) || :
+set +x 
+export PARAM_AWS_SECRET_ACCESS_KEY=
+PARAM_AWS_SECRET_ACCESS_KEY="$(cat "${secretsDir}/obs/aws-secret-access-key")"
+
+export PARAM_AWS_ACCESS_KEY_ID=
+PARAM_AWS_ACCESS_KEY_ID="$(cat "${secretsDir}/obs/aws-access-key-id")"
+
+export OC_HUB_CLUSTER_PASS=
+OC_HUB_CLUSTER_PASS="$(cat "${SHARED_DIR}/kubeadmin-password")"
+
+MANAGED_CLUSTER_PASS=
+MANAGED_CLUSTER_PASS="$(cat "${SHARED_DIR}/managed.cluster.password" 2>/dev/null || true)"
+set -x
+
+# Run the test execution script
+OC_CLUSTER_USER="kubeadmin" \
+BASE_DOMAIN="$(oc get ingress.config.openshift.io/cluster -ojson | jq -r '.spec.domain | sub("apps\\."; "")')" \
+OC_HUB_CLUSTER_API_URL="$(oc whoami --show-server)" \
+HUB_CLUSTER_NAME="local-cluster" \
+MANAGED_CLUSTER_API_URL="$(cat "${SHARED_DIR}/managed.cluster.api.url" 2>/dev/null || true)" \
+MANAGED_CLUSTER_NAME="$(cat "${SHARED_DIR}/managed.cluster.name" 2>/dev/null || true)" \
+MANAGED_CLUSTER_BASE_DOMAIN="$(cat "${SHARED_DIR}/managed.cluster.base.domain" 2>/dev/null || true)" \
+MANAGED_CLUSTER_USER="$(cat "${SHARED_DIR}/managed.cluster.username" 2>/dev/null || true)" \
+bash +x ./execute_obs_interop_commands.sh || :
+
+unset PARAM_AWS_SECRET_ACCESS_KEY PARAM_AWS_ACCESS_KEY_ID OC_HUB_CLUSTER_PASS MANAGED_CLUSTER_PASS
 
 : Restore the ACM subscription
 if [[ -f /tmp/acm-policy-subscription-backup.yaml ]]; then
