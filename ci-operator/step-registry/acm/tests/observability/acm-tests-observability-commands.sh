@@ -14,6 +14,7 @@ if [[ $SKIP_OCP_DEPLOY == "true" ]]; then
 fi 
 
 : Copy kubeconfig to default location for kubectl/oc
+mkdir -p ~/.kube
 cp "${SHARED_DIR}/kubeconfig" ~/.kube/config
 
 : Remove the ACM Subscription to allow Observability interop tests full control of operators
