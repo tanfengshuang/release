@@ -32,7 +32,7 @@ PARAM_AWS_ACCESS_KEY_ID="$(cat "${secretsDir}/obs/aws-access-key-id")"
 export OC_HUB_CLUSTER_PASS=
 OC_HUB_CLUSTER_PASS="$(cat "${SHARED_DIR}/kubeadmin-password")"
 
-MANAGED_CLUSTER_PASS=
+export MANAGED_CLUSTER_PASS=
 MANAGED_CLUSTER_PASS="$(cat "${SHARED_DIR}/managed.cluster.password" 2>/dev/null || true)"
 set -x
 
