@@ -23,11 +23,9 @@ if [[ -f "${awsCredFile}" ]]; then
     set +x
     awsAccKeyID="$(sed -nE 's/^\s*aws_access_key_id\s*=\s*//p;T;q' "${awsCredFile}")"
     awsAccKeyToken="$(sed -nE 's/^\s*aws_secret_access_key\s*=\s*//p;T;q' "${awsCredFile}")"
-    set -x
 
     [ -n "${awsAccKeyID}" ] && [ -n "${awsAccKeyToken}" ]
 
-    set +x
     : "Updating auth in options ${optionFile} file"
     AWS_KEY_ID="${awsAccKeyID}" \
     AWS_KEY_TOKEN="${awsAccKeyToken}" \
