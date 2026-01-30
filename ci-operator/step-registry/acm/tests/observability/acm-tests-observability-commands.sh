@@ -47,6 +47,6 @@ fi
 : Copy the test cases results to an external directory
 cp -r tests/pkg/tests $ARTIFACT_DIR/ || :
 
-mv $ARTIFACT_DIR/tests/results.xml $ARTIFACT_DIR/tests/junit_results.xml
+mv $ARTIFACT_DIR/tests/results.xml $ARTIFACT_DIR/tests/junit_results.xml || :
 
 true
