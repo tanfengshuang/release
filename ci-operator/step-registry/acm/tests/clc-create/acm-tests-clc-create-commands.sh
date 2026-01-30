@@ -17,7 +17,6 @@ cp "${secretsDir}/clc-interop/secret-options-yaml" "${optionFile}"
 
 # Update the AWS credentials in options.yaml from cluster profile
 if [[ -f "${awsCredFile}" ]]; then
-    : "Extracting and updating AWS credentials from cluster profile..."
     typeset awsAccKeyID= 
     typeset awsAccKeyToken=
 
@@ -28,7 +27,6 @@ if [[ -f "${awsCredFile}" ]]; then
 
     [ -n "${awsAccKeyID}" ] && [ -n "${awsAccKeyToken}" ]
 
-    : "Updating credentials in ${optionFile}..."
     ( set +x
         yq -o json eval . "${optionFile}" |
         jq -c \
