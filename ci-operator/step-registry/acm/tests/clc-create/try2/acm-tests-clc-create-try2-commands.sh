@@ -26,18 +26,13 @@ if [[ -f "${awsCredFile}" ]]; then
 
     [ -n "${awsAccKeyID}" ] && [ -n "${awsAccKeyToken}" ]
 
-    yq -o json eval . "${optionFile}" |
-    jq -c \
-          --arg awsAccKeyID "${awsAccKeyID}" \
-          --arg awsAccKeyToken "${awsAccKeyToken}" \
-        '
-          .connections.apiKeys.aws|=(
-                .awsAccessKeyID=$awsAccKeyID |
-                .awsSecretAccessKey=$awsAccKeyToken
-            )
-        ' |
-    yq -p json -o yaml eval . > "${optionFile}.tmp"
-    mv -f "${optionFile}.tmp" "${optionFile}"
+    : "Updating auth in options ${optionFile} file"
+    AWS_KEY_ID="${awsAccKeyID}" \
+    AWS_KEY_TOKEN="${awsAccKeyToken}" \
+    yq eval -i '
+        .connections.apiKeys.aws.awsAccessKeyID = env(AWS_KEY_ID) |
+        .connections.apiKeys.aws.awsSecretAccessKey = env(AWS_KEY_TOKEN)
+    ' "${optionFile}"
     set -x
     unset awsAccKeyID awsAccKeyToken
 fi
