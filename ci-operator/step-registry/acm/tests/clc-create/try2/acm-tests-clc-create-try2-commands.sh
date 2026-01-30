@@ -15,7 +15,34 @@ fi
 
 cp "${secretsDir}/clc-interop/secret-options-yaml" "${optionFile}"
 
-echo "SSSSSSSSSSSSS.........."
+# Update the AWS credentials in options.yaml from cluster profile
+if [[ -f "${awsCredFile}" ]]; then
+    typeset awsAccKeyID= 
+    typeset awsAccKeyToken=
+
+    set +x
+    awsAccKeyID="$(sed -nE 's/^\s*aws_access_key_id\s*=\s*//p;T;q' "${awsCredFile}")"
+    awsAccKeyToken="$(sed -nE 's/^\s*aws_secret_access_key\s*=\s*//p;T;q' "${awsCredFile}")"
+    set -x
+
+    [ -n "${awsAccKeyID}" ] && [ -n "${awsAccKeyToken}" ]
+
+    set +x
+    yq -o json eval . "${optionFile}" |
+    jq -c \
+          --arg awsAccKeyID "${awsAccKeyID}" \
+          --arg awsAccKeyToken "${awsAccKeyToken}" \
+        '
+          .connections.apiKeys.aws|=(
+                .awsAccessKeyID=$awsAccKeyID |
+                .awsSecretAccessKey=$awsAccKeyToken
+            )
+        ' |
+    yq -p json -o yaml eval . > "${optionFile}.tmp"
+    mv -f "${optionFile}.tmp" "${optionFile}"
+    set -x
+    unset awsAccKeyID awsAccKeyToken
+fi
 
 : "Executing CLC interop commands..."
 set +x
@@ -24,7 +51,7 @@ CYPRESS_BASE_URL="$(oc whoami --show-console)" \
 CYPRESS_HUB_API_URL="$(oc whoami --show-server)" \
 CYPRESS_CLC_OCP_IMAGE_VERSION="$(cat "${secretsDir}/clc/ocp_image_version")" \
 CLOUD_PROVIDERS="$(cat "${secretsDir}/clc/ocp_cloud_providers")" \
-echo "In testing: ..."
+echo "Try2........"
 set -x
 
 : "Copying artifacts..."
